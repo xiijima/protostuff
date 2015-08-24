@@ -13,7 +13,7 @@ messages cannot be streamed (comes with its internal format)
 what the official protobuf java implementation does:
  * it computes the size of each message and stores it on a private int field named "memoizedSerializedSize".  
  * this means when your message contains a lot of nested messages, it will traverse every message (iterates the list if repeated field) on the graph (to compute the total size of the root message) before it can perform any serialization.
- * the good thing about it is, it can perform validation on each message's fields (while computing the size) before the message is actually written (w/c is the proper way to do so).
+ * the good thing about it is, it can perform validation on each message's fields (while computing the size) before the message is actually written (which is the proper way to do so).
  * Tradeoffs:
    * None.  Protobuf was designed to have validation from the get-go, therefore, you cannot be streaming messages anyway.
 
@@ -26,7 +26,7 @@ what protobuf/protostuff does:
      * No.  We are buffering the writes to a series of logical buffers (one physical byte array if message size <= byte array size)
      * This means that the message needs to be fully computed and validated (while serializing to a byte array) before it can be written to the socket ({{{OutputStream}}}).
    * Tradeoffs
-     * Even if you don't require validation, you still need to fully buffer the messages to reduce the serialization step to 1 instead of 2 (w/c is normally: 1. traverse the graph for validation/computation and 2.  traverse the graph again for the actual serialization)
+     * Even if you don't require validation, you still need to fully buffer the messages to reduce the serialization step to 1 instead of 2 (which is normally: 1. traverse the graph for validation/computation and 2.  traverse the graph again for the actual serialization)
 
 ===={{{protostuff}}}====
 messages can be streamed like most serialization formats (e.g json)
@@ -53,7 +53,7 @@ If you need validation, then you need to buffer your writes before writing to th
   }}}
 Note that validation is intended for incoming messages.
 
-When populating the messages, you as the developer should already know w/c fields are required.
+When populating the messages, you as the developer should already know which fields are required.
 
 The above snippet is a safety-net in case you forget.
 
@@ -216,7 +216,7 @@ public final class Foo
    ProtostuffIOUtil.mergeFrom(data, f, schema);
    
    assertEquals(f, foo); // this will fail if the option is not enabled because f.stringList will be null.
-   // It would have been an empty list if the option was enabled (w/c makes it equal)
+   // It would have been an empty list if the option was enabled (which makes it equal)
    
 }}}
 
